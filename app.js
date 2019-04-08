@@ -92,30 +92,61 @@ class SuperMisstressmind {
     ];
   }
 
-  constructor(nbColors, maxTries, nbRounds, codeLength, codeStr) {
-    this.nbColors = nbColors;
-    this.maxTries = maxTries;
+  constructor(nbRounds) {
     this.nbRounds = nbRounds;
+    this.currRound = 0;
+    this.isPaused = false;
+    this.isRoundStarted = false;
+    this.isGameOver = false;
+  }
+
+  newRound(nbColors, codeLength, codeStr, goal) {
+    // TODO: Make a Round object instead...
+    if (this.isRoundStarted)
+      throw `The current round (${this.currRound} / ${this.nbRounds} is not over.`;
+    if (this.isGameOver)
+      throw `The game is over. Please start a new one if you want to play some more.`;
+
+    this.nbColors = nbColors;
     this.availablePegs = this._initPegs();
     this.codeLength = codeLength;
     this.code = this._initCode(codeStr);
-    this.history = [];
-    this.nbTries = 0;
-    this.isPaused = false;
-    this.isOver = false;
-    this.isStarted = true;
+    this.roundGoal = goal;
+    this.roundHistory = [];
+    this.currRound += 1;
+    this.roundTries = 0;
+    this.roundWinner = null;
+    this.isRoundStarted = true;
+    this.isGameOver = false;
+  }
+
+  endRound() {
+    if (!this.isRoundStarted)
+      throw `There is currently no round playing.`;
+    this.isRoundStarted = false;
+    if (this.currRound == this.nbRounds)
+      this.isGameOver = true;
   }
 
   takeAGuess(player, codeStr = "") {
-    this.nbTries += 1;
+    if (this.isPaused)
+      throw `The game is paused.`;
+    if(!this.isRoundStarted)
+      throw `The round is not started yet. Please be patient`;
+    if (this.isGameOver)
+      throw `The game is over.`;
+
+    this.roundTries += 1;
 
     let code = this._convertInputIntoCode(codeStr);
     let keys = this._computeKeys(code);
-    // TODO: Shuffle the keys
-    this.history.push({player, code, keys});
+    this.roundHistory.push({player, code, keys});
 
-    if (this._isGuessCorrect(keys))
-      this.isOver = true;
+    if (this._isGuessCorrect(keys)) {
+      this.roundWinner = player;
+      this.endRound();
+    }
+    return true;
   }
 
   togglePause() {
@@ -162,16 +193,18 @@ class SuperMisstressmind {
   _computeKeys(playerCode) {
     let tmpCode = [...this.code];
     let tmpPlayerCode = [...playerCode];
-    let keys = Array.from({length: this.codeLength}, (_) => SuperMisstressmind.EMPTY_PEGS["key"]);
+    let keys = [];
 
     for (let i in playerCode) {
       if (this._isPegAtRightPos(i, tmpCode, tmpPlayerCode))
-        keys[i] = SuperMisstressmind.KEY_PEGS[1];
+        keys.push(SuperMisstressmind.KEY_PEGS[1]);
     }
     for (let i in tmpPlayerCode) {
       if (tmpPlayerCode[i] !== null) {
         if (this._isPegInCode(i, tmpCode, tmpPlayerCode))
-          keys[i] = SuperMisstressmind.KEY_PEGS[0];
+          keys.push(SuperMisstressmind.KEY_PEGS[0]);
+        else
+          keys.push(SuperMisstressmind.EMPTY_PEGS["key"]);
       }
     }
 
@@ -223,8 +256,8 @@ class SuperMisstressmind {
   }
 
   get lastGuess() {
-    if (this.nbTries > 0)
-      return this.history[this.nbTries - 1];
+    if (this.roundTries > 0)
+      return this.roundHistory[this.roundTries - 1];
     return null;
   }
 }
