@@ -35,7 +35,7 @@ export default class App {
     return msgObj;
   }
   _isCommand(str) {
-    return str.startsWith(CMD_PREFIX);
+    return str.startsWith(config.CMD_PREFIX);
   }
   _handleCommand(msgObj) {
     let user = msgObj["user"];
@@ -48,7 +48,7 @@ export default class App {
       let response = this.commands[cmd].handler(user, args);
       this._sendResponse(response);
     } else {
-      this._sendResponse({user, msg: "Invalid command."});
+      this._sendResponse({user, content: [{txt: "Invalid command."}]});
     }
   }
 
@@ -62,13 +62,14 @@ export default class App {
 
   _sendResponse(response) {
     let user = response.user || "";
-    let bg = response.bg || "";
-    let fg = response.bg || "";
-    let weight = response.weight || "";
     let group = response.group || "";
 
-    for (let line of response.text) {
-      this.cb.sendNotice(line, user, bg, fg, weight, group);
+    for (let line of response.content) {
+      let bg = line.bg || "";
+      let fg = line.fg || "";
+      let weight = line.weight || "";
+      let txt = line.txt || "";
+      this.cb.sendNotice(txt, user, bg, fg, weight, group);
     }
   }
 
@@ -78,27 +79,32 @@ export default class App {
         modelOnly: true,
         desc: {
           short: {
-            fr: ["Affiche l'aide"],
-            en: ["Show the help"]
+            fr: [`${config.CMD_PREFIX}help [command] - Affiche l'aide`],
+            en: [`Show the help`]
           },
           long: {
-            fr: ["La commande d'aide permet..."],
-            en: ["The help command blablabla"]
+            fr: [`${config.CMD_PREFIX}help [command] - Affiche des informations utiles sur le jeu.`,
+                 `Si [command] est specifie, affiche l'aide de la commande.`],
+            en: [`The help command blablabla`]
           }
         },
         handler: (user, args) => {
-          let text = [];
+          let content = [];
           let cmd = args[1] || "";
           if (this._isValidCommand(cmd)) {
-            if (this._isModel(user) || !this.commands[cmd].modelOnly)
-              text = text.concat(this.commands[cmd].desc.long.fr);
-            else
-              text.push("Acces interdit");
+            if (this._isModel(user) || !this.commands[cmd].modelOnly) {
+              for (let  helpLine of this.commands[cmd].desc.long.fr) {
+                content.push({txt: helpLine});
+              }
+            } else {
+              content.push({txt: "Acces interdit"});
+            }
           } else {
-            text.push("Bienvenue dans l'aide !");
+            content.push({txt: "Bienvenue dans l'aide !"});
           }
 
-          return {user, text};
+
+          return {user, content};
         }
       }
     };
