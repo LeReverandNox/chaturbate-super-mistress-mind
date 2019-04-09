@@ -1,4 +1,4 @@
-class CommandParser {
+export default class CommandParser {
   _sanitize(str) {
     return str.trim()
       .replace(/\s+/g, ' ')
@@ -10,7 +10,7 @@ class CommandParser {
     let args = [];
     let readingPart = false;
     let part = '';
-    for(let i = CMD_PREFIX.length; i < str.length; i += 1) {
+    for(let i = config.CMD_PREFIX.length; i < str.length; i += 1) {
       if (str.charAt(i) === ' ' && !readingPart) {
         if (part !== '')
           args.push(part);

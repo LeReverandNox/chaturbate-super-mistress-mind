@@ -1,4 +1,6 @@
-class App {
+import SuperMisstressmind from './SuperMistressmind.js';
+
+export default class App {
   constructor(cb, cbjs, commandParser) {
     this.cb = cb;
     this.cbjs = cbjs;

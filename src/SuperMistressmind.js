@@ -1,14 +1,14 @@
-class SuperMisstressmind {
+export default class SuperMisstressmind {
   static get EMPTY_PEGS() {
     return {
       code: {
         name: "code-empty",
-        image: `:${IMAGE_PREFIX}-code-empty`,
+        image: `:${config.IMAGE_PREFIX}-code-empty`,
         color: "#000000"
       },
       key: {
         name: "key-empty",
-        image: `:${IMAGE_PREFIX}-key-empty`,
+        image: `:${config.IMAGE_PREFIX}-key-empty`,
         color: "#000000"
       },
     };
@@ -18,57 +18,57 @@ class SuperMisstressmind {
     return {
       'W': {
         name: "white",
-        image: `:${IMAGE_PREFIX}-white`,
+        image: `:${config.IMAGE_PREFIX}-white`,
         color: "#FFFFFF"
       },
       'R': {
         name: "red",
-        image: `:${IMAGE_PREFIX}-red`,
+        image: `:${config.IMAGE_PREFIX}-red`,
         color: "#FF0000"
       },
       'B': {
         name: "blue",
-        image: `:${IMAGE_PREFIX}-blue`,
+        image: `:${config.IMAGE_PREFIX}-blue`,
         color: "#0000FF"
       },
       'G': {
         name: "green",
-        image: `:${IMAGE_PREFIX}-green`,
+        image: `:${config.IMAGE_PREFIX}-green`,
         color: "#008000"
       },
       'V': {
         name: "violet",
-        image: `:${IMAGE_PREFIX}-violet`,
+        image: `:${config.IMAGE_PREFIX}-violet`,
         color: "#8000FF"
       },
       'O': {
         name: "orange",
-        image: `:${IMAGE_PREFIX}-orange`,
+        image: `:${config.IMAGE_PREFIX}-orange`,
         color: "#FFA500"
       },
       'Y': {
         name: "yellow",
-        image: `:${IMAGE_PREFIX}-yellow`,
+        image: `:${config.IMAGE_PREFIX}-yellow`,
         color: "##fFFF00"
       },
       'M': {
         name: "maroon",
-        image: `:${IMAGE_PREFIX}-maroon`,
+        image: `:${config.IMAGE_PREFIX}-maroon`,
         color: "#8b4513"
       },
       'P': {
         name: "pink",
-        image: `:${IMAGE_PREFIX}-pink`,
+        image: `:${config.IMAGE_PREFIX}-pink`,
         color: "##FF69B4"
       },
       'C': {
         name: "cyan",
-        image: `:${IMAGE_PREFIX}-cyan`,
+        image: `:${config.IMAGE_PREFIX}-cyan`,
         color: "##00ffff"
       },
       'L': {
         name: "lime",
-        image: `:${IMAGE_PREFIX}-lime`,
+        image: `:${config.IMAGE_PREFIX}-lime`,
         color: "##00ff00"
       }
     };
@@ -78,12 +78,12 @@ class SuperMisstressmind {
     return [
       {
         name: "white",
-        image: `:${IMAGE_PREFIX}-key-white`,
+        image: `:${config.IMAGE_PREFIX}-key-white`,
         color: "#FFFFFF"
       },
       {
         name: "red",
-        image: `:${IMAGE_PREFIX}-key-red`,
+        image: `:${config.IMAGE_PREFIX}-key-red`,
         color: "#FF0000"
       }
     ];
@@ -230,7 +230,7 @@ class SuperMisstressmind {
     let code = [];
 
     codeStr = codeStr.toUpperCase();
-    codeStr = codeStr.padEnd(this.codeLength, EMPTY_CHAR);
+    codeStr = codeStr.padEnd(this.codeLength, config.EMPTY_CHAR);
     codeStr = codeStr.substring(0, this.codeLength);
     let codeArr = codeStr.split("");
 

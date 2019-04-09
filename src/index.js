@@ -1,6 +1,5 @@
-const IMAGE_PREFIX = "61cf4b2dc8";
-const EMPTY_CHAR = '.';
-const CMD_PREFIX = "/sm";
+import App from './App';
+import CommandParser from './CommandParser.js';
 
 let commandParser = new CommandParser();
 let app = new App(cb, cbjs, commandParser);
