@@ -1,29 +1,29 @@
 export default class CommandParser {
   _sanitize(str) {
-    return str.trim()
+    return str
+      .trim()
       .replace(/\s+/g, ' ')
       .replace(/\t+/g, ' ');
   }
 
   parse(str, looksForQuotes = true) {
-    str = this._sanitize(str);
-    let args = [];
+    const cleanStr = this._sanitize(str);
+    const args = [];
     let readingPart = false;
     let part = '';
-    for(let i = config.CMD_PREFIX.length; i < str.length; i += 1) {
-      if (str.charAt(i) === ' ' && !readingPart) {
-        if (part !== '')
-          args.push(part);
+
+    for (let i = config.CMD_PREFIX.length; i < cleanStr.length; i += 1) {
+      if (cleanStr.charAt(i) === ' ' && !readingPart) {
+        if (part !== '') args.push(part.trim());
         part = '';
+      } else if (cleanStr.charAt(i) === '"' && looksForQuotes) {
+        readingPart = !readingPart;
       } else {
-        if (str.charAt(i) === '\"' && looksForQuotes) {
-          readingPart = !readingPart;
-        } else {
-          part += str.charAt(i);
-        }
+        part += cleanStr.charAt(i);
       }
     }
-    args.push(part);
+
+    args.push(part.trim());
 
     return args;
   }
