@@ -11,7 +11,8 @@ export default class SuperMisstressmind {
       key: {
         name: "key-empty",
         image: `:${config.IMAGE_PREFIX}-key-empty`,
-        color: "#000000"
+        color: "#000000",
+        priority: 2
       },
     };
   }
@@ -81,12 +82,14 @@ export default class SuperMisstressmind {
       {
         name: "white",
         image: `:${config.IMAGE_PREFIX}-key-white`,
-        color: "#FFFFFF"
+        color: "#FFFFFF",
+        priority: 1
       },
       {
         name: "red",
         image: `:${config.IMAGE_PREFIX}-key-red`,
-        color: "#FF0000"
+        color: "#FF0000",
+        priority: 0
       }
     ];
   }

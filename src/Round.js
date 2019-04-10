@@ -1,4 +1,4 @@
-import SuperMisstressmind from './SuperMistressmind.js';
+import SuperMisstressmind from './SuperMistressmind';
 
 export default class Round {
   constructor(nbAvailablePegs, codeStr, goal) {
@@ -15,9 +15,14 @@ export default class Round {
   get nbAvailablePegs() {
     return this._nbAvailablePegs;
   }
+
   set nbAvailablePegs(nb) {
     if (nb > SuperMisstressmind.NB_PEGS || nb < 1)
-      throw `You can't play with ${nb} colors. Please choose a value between 1 and ${SuperMisstressmind.NB_PEGS}.`;
+      throw new Error(
+        `You can't play with ${nb} colors. Please choose a value between 1 and ${
+          SuperMisstressmind.NB_PEGS
+        }.`,
+      );
 
     this._nbAvailablePegs = nb;
     return this.nbAvailablePegs;
@@ -30,20 +35,21 @@ export default class Round {
   get goal() {
     return this._goal;
   }
-  set goal(str) {
-    str = str.trim();
-    if (!str)
-      throw `You can't have an empty goal for a round.`;
 
-    this._goal = str;
+  set goal(str) {
+    const trimmedStr = str.trim();
+    if (!str) throw new Error(`You can't have an empty goal for a round.`);
+
+    this._goal = trimmedStr;
     return this.goal;
   }
 
   get history() {
     return this._history;
   }
+
   appendToHistory(player, code, keys) {
-    this._history.push({player, code, keys});
+    this._history.push({ player, code, keys });
   }
 
   get tries() {
@@ -57,6 +63,7 @@ export default class Round {
   get winner() {
     return this._winner;
   }
+
   set winner(name) {
     this._winner = name;
     return this.winner;
@@ -65,21 +72,21 @@ export default class Round {
   get code() {
     return this._code;
   }
+
   set code(codeStr) {
-    let codeLength = codeStr.length;
-    codeStr = codeStr
-      .toUpperCase()
-      .trim();
+    const codeLength = codeStr.length;
+    const cleanCodeStr = codeStr.toUpperCase().trim();
 
     if (codeLength < 1)
-      throw `Your code can't be less then one peg.`;
+      throw new Error(`Your code can't be less then one peg.`);
 
-    let code = [];
-    for (let c of codeStr) {
+    const code = [];
+
+    [...cleanCodeStr].forEach(c => {
       if (!this._isPegAvailable(c))
-        throw `"${c} is not a valid color for your code.`;
+        throw new Error(`"${c} is not a valid color for your code.`);
       code.push(this.availablePegs[c]);
-    }
+    });
 
     this._code = code;
     return this.code;
@@ -92,14 +99,15 @@ export default class Round {
   get isOver() {
     return this._isOver;
   }
+
   end() {
     this._isOver = true;
   }
 
   _initPegs() {
-    let colors = {};
+    const colors = {};
     for (let i = 0; i < this.nbAvailablePegs; i += 1) {
-      let letter = SuperMisstressmind.PEG_LETTERS[i];
+      const letter = SuperMisstressmind.PEG_LETTERS[i];
       colors[letter] = SuperMisstressmind.CODE_PEGS[letter];
     }
 
@@ -111,46 +119,46 @@ export default class Round {
   }
 
   _convertInputIntoCode(codeStr) {
-    codeStr = codeStr
+    const cleanCodeStr = codeStr
       .toUpperCase()
       .padEnd(this.codeLength, config.EMPTY_CHAR)
       .substring(0, this.codeLength);
-    let codeArr = codeStr.split("");
-    let code = [];
+    const codeArr = cleanCodeStr.split('');
+    const code = [];
 
-    for (let c of codeArr) {
-      if (this._isPegAvailable(c))
-        code.push(this.availablePegs[c]);
-      else
-        code.push(SuperMisstressmind.EMPTY_PEGS["code"]);
-    }
+    codeArr.forEach(c => {
+      if (this._isPegAvailable(c)) code.push(this.availablePegs[c]);
+      else code.push(SuperMisstressmind.EMPTY_PEGS.code);
+    });
 
     return code;
   }
 
   _computeKeys(playerCode) {
-    let tmpCode = [...this.code];
-    let tmpPlayerCode = [...playerCode];
-    let keys = [];
+    const tmpCode = [...this.code];
+    const tmpPlayerCode = [...playerCode];
+    const keys = [];
 
-    for (let i in playerCode) {
+    playerCode.forEach((_, i) => {
       if (this._isPegAtRightPos(i, tmpCode, tmpPlayerCode))
         keys.push(SuperMisstressmind.KEY_PEGS[1]);
-    }
-    for (let i in tmpPlayerCode) {
+    });
+
+    tmpPlayerCode.forEach((_, i) => {
       if (tmpPlayerCode[i] !== null) {
         if (this._isPegInCode(i, tmpCode, tmpPlayerCode))
           keys.push(SuperMisstressmind.KEY_PEGS[0]);
-        else
-          keys.push(SuperMisstressmind.EMPTY_PEGS["key"]);
+        else keys.push(SuperMisstressmind.EMPTY_PEGS.key);
       }
-    }
+    });
+
+    keys.sort((a, b) => a.priority > b.priority);
 
     return keys;
   }
 
   _isPegAtRightPos(i, code, playerCode) {
-    if (playerCode[i] == this.code[i]) {
+    if (playerCode[i] === this.code[i]) {
       playerCode[i] = null;
       code[i] = null;
       return true;
@@ -159,28 +167,26 @@ export default class Round {
   }
 
   _isPegInCode(pos, code, playerCode) {
-    for (let i in code) {
-      if (playerCode[pos] == code[i]) {
+    return playerCode.some((_, i) => {
+      if (playerCode[pos] === code[i]) {
         code[i] = null;
         playerCode[pos] = null;
         return true;
       }
-    }
-    return false;
+      return false;
+    });
   }
 
   _isGuessCorrect(keys) {
-    for (let k of keys) {
-      if (k.name != SuperMisstressmind.KEY_PEGS[1].name)
-        return false;
-    }
-    return true;
+    return !keys.some(k => {
+      return k.name !== SuperMisstressmind.KEY_PEGS[1].name;
+    });
   }
 
   play(player, codeStr) {
     this._tries += 1;
-    let code = this._convertInputIntoCode(codeStr);
-    let keys = this._computeKeys(code);
+    const code = this._convertInputIntoCode(codeStr);
+    const keys = this._computeKeys(code);
     this.appendToHistory(player, code, keys);
 
     if (this._isGuessCorrect(keys)) {
