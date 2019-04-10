@@ -16,6 +16,9 @@
     "sourceType": "module"
   },
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off",
+    "no-param-reassign": ["error", { "props": false }]
   }
 }
