@@ -4,7 +4,7 @@ export default class Round {
   constructor(nbAvailablePegs, codeStr, goal) {
     this.nbAvailablePegs = nbAvailablePegs;
     this._availablePegs = this._initPegs();
-    this._code = this._initCode(codeStr);
+    this.code = codeStr;
     this.goal = goal;
     this._history = [];
     this._tries = 0;
@@ -65,6 +65,25 @@ export default class Round {
   get code() {
     return this._code;
   }
+  set code(codeStr) {
+    let codeLength = codeStr.length;
+    codeStr = codeStr
+      .toUpperCase()
+      .trim();
+
+    if (codeLength < 1)
+      throw `Your code can't be less then one peg.`;
+
+    let code = [];
+    for (let c of codeStr) {
+      if (!this._isPegAvailable(c))
+        throw `"${c} is not a valid color for your code.`;
+      code.push(this.availablePegs[c]);
+    }
+
+    this._code = code;
+    return this.code;
+  }
 
   get codeLength() {
     return this._code.length;
@@ -85,25 +104,6 @@ export default class Round {
     }
 
     return colors;
-  }
-
-  _initCode(codeStr) {
-    let codeLength = codeStr.length;
-    codeStr = codeStr
-      .toUpperCase()
-      .trim();
-
-    if (codeLength < 1)
-      throw `Your code can't be less then one peg.`;
-
-    let code = [];
-    for (let c of codeStr) {
-      if (!this._isPegAvailable(c))
-        throw `"${c} is not a valid color for your code.`;
-      code.push(this.availablePegs[c]);
-    }
-
-    return code;
   }
 
   _isPegAvailable(c) {
