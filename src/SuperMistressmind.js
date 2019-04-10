@@ -101,12 +101,26 @@ export default class SuperMisstressmind {
 
   constructor(nbRounds) {
     this.nbRounds = nbRounds;
-    this.currRound = 0;
+    this._currRound = 0;
     this.round = null;
     this.previousRounds = [];
 
     this.isPaused = false;
     this.isGameOver = false;
+  }
+
+  get nbRounds() {
+    return this._nbRounds;
+  }
+  set nbRounds(n) {
+    if (n < 1)
+      throw `A game can't have less than one round.`;
+    this._nbRounds = n;
+    return this.nbRounds;
+  }
+
+  get currRound() {
+    return this._currRound;
   }
 
   newRound(nbColors, codeLength, codeStr, goal) {
@@ -116,7 +130,7 @@ export default class SuperMisstressmind {
       throw `The game is over. Please start a new one if you want to play some more.`;
 
     this.round = new Round(nbColors, codeLength, codeStr, goal);
-    this.currRound += 1;
+    this._currRound += 1;
   }
 
   endRound() {
