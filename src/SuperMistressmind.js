@@ -1,3 +1,5 @@
+import Round from "./Round";
+
 export default class SuperMisstressmind {
   static get EMPTY_PEGS() {
     return {
@@ -89,172 +91,60 @@ export default class SuperMisstressmind {
     ];
   }
 
+  static get PEG_LETTERS() {
+    return Object.keys(SuperMisstressmind.CODE_PEGS);
+  }
+
+  static get NB_PEGS() {
+    return SuperMisstressmind.PEG_LETTERS.length;
+  }
+
   constructor(nbRounds) {
     this.nbRounds = nbRounds;
     this.currRound = 0;
+    this.round = null;
+    this.previousRounds = [];
+
     this.isPaused = false;
-    this.isRoundStarted = false;
     this.isGameOver = false;
   }
 
   newRound(nbColors, codeLength, codeStr, goal) {
-    // TODO: Make a Round object instead...
-    if (this.isRoundStarted)
+    if (this.round && !this.round.isOver)
       throw `The current round (${this.currRound} / ${this.nbRounds} is not over.`;
     if (this.isGameOver)
       throw `The game is over. Please start a new one if you want to play some more.`;
 
-    this.nbColors = nbColors;
-    this.availablePegs = this._initPegs();
-    this.codeLength = codeLength;
-    this.code = this._initCode(codeStr);
-    this.roundGoal = goal;
-    this.roundHistory = [];
+    this.round = new Round(nbColors, codeLength, codeStr, goal);
     this.currRound += 1;
-    this.roundTries = 0;
-    this.roundWinner = null;
-    this.isRoundStarted = true;
-    this.isGameOver = false;
   }
 
   endRound() {
-    if (!this.isRoundStarted)
+    if (!this.round)
       throw `There is currently no round playing.`;
-    this.isRoundStarted = false;
+    this.previousRounds.push(this.round);
+    this.round.end();
     if (this.currRound == this.nbRounds)
       this.isGameOver = true;
   }
 
-  takeAGuess(player, codeStr = "") {
+  play(player, codeStr = "") {
     if (this.isPaused)
       throw `The game is paused.`;
-    if(!this.isRoundStarted)
-      throw `The round is not started yet. Please be patient`;
     if (this.isGameOver)
       throw `The game is over.`;
+    if (!this.round)
+      throw `The round is not started yet. Please be patient`;
+    if (this.round && this.round.isOver)
+      throw `The round is over.`;
 
-    this.roundTries += 1;
-
-    let code = this._convertInputIntoCode(codeStr);
-    let keys = this._computeKeys(code);
-    this.roundHistory.push({player, code, keys});
-
-    if (this._isGuessCorrect(keys)) {
-      this.roundWinner = player;
+    let win = this.round.play(player, codeStr);
+    if (win)
       this.endRound();
-    }
-    return true;
+    return win;
   }
 
-  togglePause() {
+  pause() {
     this.isPaused = !this.isPaused;
-  }
-
-  _initPegs() {
-    let letters = Object.keys(SuperMisstressmind.CODE_PEGS);
-    let nbColors = letters.length;
-    if (this.nbColors > nbColors || this.nbColors < 1)
-      throw `You can't play with ${this.nbColors} colors. Please choose a value between 1 and ${nbColors}.`;
-
-    let colors = {};
-    for (let i = 0; i < this.nbColors; i += 1) {
-      colors[letters[i]] = SuperMisstressmind.CODE_PEGS[letters[i]];
-    }
-
-    return colors;
-  }
-
-  _initCode(codeStr) {
-    let codeLength = codeStr.length;
-    codeStr = codeStr.toUpperCase();
-
-    if (codeLength != this.codeLength)
-      throw `Your code must be exactly ${this.codeLength} colors long.`;
-
-    let code = [];
-    for (let c of codeStr) {
-      if (!this._isPegAvailable(c))
-        throw `"${c} is not a valid color for your code.`;
-      code.push(this.availablePegs[c]);
-    }
-
-    return code;
-  }
-
-  _isPegAvailable(c) {
-    if (c in this.availablePegs)
-      return true;
-    return false;
-  }
-
-  _computeKeys(playerCode) {
-    let tmpCode = [...this.code];
-    let tmpPlayerCode = [...playerCode];
-    let keys = [];
-
-    for (let i in playerCode) {
-      if (this._isPegAtRightPos(i, tmpCode, tmpPlayerCode))
-        keys.push(SuperMisstressmind.KEY_PEGS[1]);
-    }
-    for (let i in tmpPlayerCode) {
-      if (tmpPlayerCode[i] !== null) {
-        if (this._isPegInCode(i, tmpCode, tmpPlayerCode))
-          keys.push(SuperMisstressmind.KEY_PEGS[0]);
-        else
-          keys.push(SuperMisstressmind.EMPTY_PEGS["key"]);
-      }
-    }
-
-    return keys;
-  }
-
-  _isPegAtRightPos(i, code, playerCode) {
-    if (playerCode[i] == this.code[i]) {
-      playerCode[i] = null;
-      code[i] = null;
-      return true;
-    }
-    return false;
-  }
-  _isPegInCode(pos, code, playerCode) {
-    for (let i in code) {
-      if (playerCode[pos] == code[i]) {
-        code[i] = null;
-        playerCode[pos] = null;
-        return true;
-      }
-    }
-    return false;
-  }
-  _convertInputIntoCode(codeStr) {
-    let code = [];
-
-    codeStr = codeStr.toUpperCase();
-    codeStr = codeStr.padEnd(this.codeLength, config.EMPTY_CHAR);
-    codeStr = codeStr.substring(0, this.codeLength);
-    let codeArr = codeStr.split("");
-
-    for (let c of codeArr) {
-      if (this._isPegAvailable(c))
-        code.push(this.availablePegs[c]);
-      else
-        code.push(SuperMisstressmind.EMPTY_PEGS["code"]);
-    }
-
-    return code;
-  }
-
-  _isGuessCorrect(keys) {
-    for (let k of keys) {
-      if (k.name != SuperMisstressmind.KEY_PEGS[1].name)
-        return false;
-    }
-    return true;
-  }
-
-  get lastGuess() {
-    if (this.roundTries > 0)
-      return this.roundHistory[this.roundTries - 1];
-    return null;
   }
 }
