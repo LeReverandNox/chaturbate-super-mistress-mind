@@ -10,7 +10,9 @@
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly",
-    "config": false
+    "config": false,
+    "cb": false,
+    "cbjs": false
   },
   "parserOptions": {
     "ecmaVersion": 2018,
