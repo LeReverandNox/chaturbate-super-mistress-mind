@@ -107,9 +107,7 @@ export default class Round {
   }
 
   _isPegAvailable(c) {
-    if (c in this.availablePegs)
-      return true;
-    return false;
+    return c in this.availablePegs;
   }
 
   _convertInputIntoCode(codeStr) {
