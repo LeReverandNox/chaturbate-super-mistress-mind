@@ -115,8 +115,9 @@ export default class SuperMisstressmind {
   get nbRounds() {
     return this._nbRounds;
   }
+
   set nbRounds(n) {
-    if (n < 1) throw `A game can't have less than one round.`;
+    if (n < 1) throw new Error(`A game can't have less than one round.`);
     this._nbRounds = n;
     return this.nbRounds;
   }
@@ -127,30 +128,33 @@ export default class SuperMisstressmind {
 
   newRound(nbColors, codeLength, codeStr, goal) {
     if (this.round && !this.round.isOver)
-      throw `The current round (${this.currRound} / ${
-        this.nbRounds
-      } is not over.`;
+      throw new Error(
+        `The current round (${this.currRound} / ${this.nbRounds} is not over.`,
+      );
     if (this.isGameOver)
-      throw `The game is over. Please start a new one if you want to play some more.`;
+      throw new Error(
+        `The game is over. Please start a new one if you want to play some more.`,
+      );
 
     this.round = new Round(nbColors, codeLength, codeStr, goal);
     this._currRound += 1;
   }
 
   endRound() {
-    if (!this.round) throw `There is currently no round playing.`;
+    if (!this.round) throw new Error(`There is currently no round playing.`);
     this.previousRounds.push(this.round);
     this.round.end();
-    if (this.currRound == this.nbRounds) this.isGameOver = true;
+    if (this.currRound === this.nbRounds) this.isGameOver = true;
   }
 
   play(player, codeStr = '') {
-    if (this.isPaused) throw `The game is paused.`;
-    if (this.isGameOver) throw `The game is over.`;
-    if (!this.round) throw `The round is not started yet. Please be patient`;
-    if (this.round && this.round.isOver) throw `The round is over.`;
+    if (this.isPaused) throw new Error(`The game is paused.`);
+    if (this.isGameOver) throw new Error(`The game is over.`);
+    if (!this.round)
+      throw new Error(`The round is not started yet. Please be patient`);
+    if (this.round && this.round.isOver) throw new Error(`The round is over.`);
 
-    let win = this.round.play(player, codeStr);
+    const win = this.round.play(player, codeStr);
     if (win) this.endRound();
     return win;
   }
