@@ -75,15 +75,15 @@ export default class App {
 
   get commands() {
     return {
-      "help": {
-        modelOnly: true,
+      "helpFr": {
+        modelOnly: false,
         desc: {
           short: {
-            fr: [`${config.CMD_PREFIX}help [command] - Affiche l'aide`],
-            en: [`Show the help`]
+            fr: [`${config.CMD_PREFIX}helpFr [command] - Affiche l'aide du jeu (Fr)`],
+            en: [`Show the help (En)`]
           },
           long: {
-            fr: [`${config.CMD_PREFIX}help [command] - Affiche des informations utiles sur le jeu.`,
+            fr: [`${config.CMD_PREFIX}helpFr [command] - Affiche des informations utiles sur le jeu (Fr).`,
                  `Si [command] est specifie, affiche l'aide de la commande.`],
             en: [`The help command blablabla`]
           }
@@ -102,7 +102,6 @@ export default class App {
           } else {
             content.push({txt: "Bienvenue dans l'aide !"});
           }
-
 
           return {user, content};
         }
