@@ -1,96 +1,96 @@
-import Round from "./Round";
+import Round from './Round';
 
 export default class SuperMisstressmind {
   static get EMPTY_PEGS() {
     return {
       code: {
-        name: "code-empty",
+        name: 'code-empty',
         image: `:${config.IMAGE_PREFIX}-code-empty`,
-        color: "#000000"
+        color: '#000000',
       },
       key: {
-        name: "key-empty",
+        name: 'key-empty',
         image: `:${config.IMAGE_PREFIX}-key-empty`,
-        color: "#000000",
-        priority: 2
+        color: '#000000',
+        priority: 2,
       },
     };
   }
 
   static get CODE_PEGS() {
     return {
-      'W': {
-        name: "white",
+      W: {
+        name: 'white',
         image: `:${config.IMAGE_PREFIX}-white`,
-        color: "#FFFFFF"
+        color: '#FFFFFF',
       },
-      'R': {
-        name: "red",
+      R: {
+        name: 'red',
         image: `:${config.IMAGE_PREFIX}-red`,
-        color: "#FF0000"
+        color: '#FF0000',
       },
-      'B': {
-        name: "blue",
+      B: {
+        name: 'blue',
         image: `:${config.IMAGE_PREFIX}-blue`,
-        color: "#0000FF"
+        color: '#0000FF',
       },
-      'G': {
-        name: "green",
+      G: {
+        name: 'green',
         image: `:${config.IMAGE_PREFIX}-green`,
-        color: "#008000"
+        color: '#008000',
       },
-      'V': {
-        name: "violet",
+      V: {
+        name: 'violet',
         image: `:${config.IMAGE_PREFIX}-violet`,
-        color: "#8000FF"
+        color: '#8000FF',
       },
-      'O': {
-        name: "orange",
+      O: {
+        name: 'orange',
         image: `:${config.IMAGE_PREFIX}-orange`,
-        color: "#FFA500"
+        color: '#FFA500',
       },
-      'Y': {
-        name: "yellow",
+      Y: {
+        name: 'yellow',
         image: `:${config.IMAGE_PREFIX}-yellow`,
-        color: "##fFFF00"
+        color: '##fFFF00',
       },
-      'M': {
-        name: "maroon",
+      M: {
+        name: 'maroon',
         image: `:${config.IMAGE_PREFIX}-maroon`,
-        color: "#8b4513"
+        color: '#8b4513',
       },
-      'P': {
-        name: "pink",
+      P: {
+        name: 'pink',
         image: `:${config.IMAGE_PREFIX}-pink`,
-        color: "##FF69B4"
+        color: '##FF69B4',
       },
-      'C': {
-        name: "cyan",
+      C: {
+        name: 'cyan',
         image: `:${config.IMAGE_PREFIX}-cyan`,
-        color: "##00ffff"
+        color: '##00ffff',
       },
-      'L': {
-        name: "lime",
+      L: {
+        name: 'lime',
         image: `:${config.IMAGE_PREFIX}-lime`,
-        color: "##00ff00"
-      }
+        color: '##00ff00',
+      },
     };
   }
 
   static get KEY_PEGS() {
     return [
       {
-        name: "white",
+        name: 'white',
         image: `:${config.IMAGE_PREFIX}-key-white`,
-        color: "#FFFFFF",
-        priority: 1
+        color: '#FFFFFF',
+        priority: 1,
       },
       {
-        name: "red",
+        name: 'red',
         image: `:${config.IMAGE_PREFIX}-key-red`,
-        color: "#FF0000",
-        priority: 0
-      }
+        color: '#FF0000',
+        priority: 0,
+      },
     ];
   }
 
@@ -116,8 +116,7 @@ export default class SuperMisstressmind {
     return this._nbRounds;
   }
   set nbRounds(n) {
-    if (n < 1)
-      throw `A game can't have less than one round.`;
+    if (n < 1) throw `A game can't have less than one round.`;
     this._nbRounds = n;
     return this.nbRounds;
   }
@@ -128,7 +127,9 @@ export default class SuperMisstressmind {
 
   newRound(nbColors, codeLength, codeStr, goal) {
     if (this.round && !this.round.isOver)
-      throw `The current round (${this.currRound} / ${this.nbRounds} is not over.`;
+      throw `The current round (${this.currRound} / ${
+        this.nbRounds
+      } is not over.`;
     if (this.isGameOver)
       throw `The game is over. Please start a new one if you want to play some more.`;
 
@@ -137,27 +138,20 @@ export default class SuperMisstressmind {
   }
 
   endRound() {
-    if (!this.round)
-      throw `There is currently no round playing.`;
+    if (!this.round) throw `There is currently no round playing.`;
     this.previousRounds.push(this.round);
     this.round.end();
-    if (this.currRound == this.nbRounds)
-      this.isGameOver = true;
+    if (this.currRound == this.nbRounds) this.isGameOver = true;
   }
 
-  play(player, codeStr = "") {
-    if (this.isPaused)
-      throw `The game is paused.`;
-    if (this.isGameOver)
-      throw `The game is over.`;
-    if (!this.round)
-      throw `The round is not started yet. Please be patient`;
-    if (this.round && this.round.isOver)
-      throw `The round is over.`;
+  play(player, codeStr = '') {
+    if (this.isPaused) throw `The game is paused.`;
+    if (this.isGameOver) throw `The game is over.`;
+    if (!this.round) throw `The round is not started yet. Please be patient`;
+    if (this.round && this.round.isOver) throw `The round is over.`;
 
     let win = this.round.play(player, codeStr);
-    if (win)
-      this.endRound();
+    if (win) this.endRound();
     return win;
   }
 
