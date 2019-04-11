@@ -79,17 +79,17 @@ export default class App {
   }
 
   _handleCommand(msgObj) {
-    const { user } = msgObj.user;
+    const { user } = msgObj;
     const msg = msgObj.m;
     const args = this.commandParser.parse(msg);
     const cmd = args[0] || '';
 
     if (this._isValidCommand(cmd)) {
-      const response = this.commands[cmd].handler(user, args);
-      this._sendResponse(response);
-    } else {
-      this._sendResponse({ user, content: [{ txt: 'Invalid command.' }] });
-    }
+      if (this._commandAuthorized(user, cmd)) {
+        const response = this.commands[cmd].handler(user, args);
+        this._sendResponse(response);
+      } else this._sendError(user, new Error(`Access denied.`));
+    } else this._sendError(user, new Error(`Invalid command..`));
   }
 
   onTip(tip) {
@@ -125,6 +125,10 @@ export default class App {
       ],
     };
     this._sendResponse(response);
+  }
+
+  _commandAuthorized(user, cmd) {
+    return this._isModel(user) ? true : !this.commands[cmd].modelOnly;
   }
 
   get commands() {
