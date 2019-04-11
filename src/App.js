@@ -79,10 +79,9 @@ export default class App {
   }
 
   _handleCommand(msgObj) {
-    const { user } = msgObj;
-    const msg = msgObj.m;
+    const { user, m: msg } = msgObj;
     const args = this.commandParser.parse(msg);
-    const cmd = args[0] || '';
+    const [cmd = ''] = args;
 
     if (this._isValidCommand(cmd)) {
       if (this._commandAuthorized(user, cmd)) {
@@ -109,14 +108,9 @@ export default class App {
   }
 
   _sendResponse(response) {
-    const user = response.user || '';
-    const group = response.group || '';
-
+    const { user = '', group = '' } = response;
     response.content.forEach(line => {
-      const bg = line.bg || '';
-      const fg = line.fg || '';
-      const weight = line.weight || '';
-      const txt = line.txt || '';
+      const { fg = '', bg = '', weight = '', txt = '' } = line;
       this._cb.sendNotice(
         `${config.NOTICE_PREFIX} - ${txt}`,
         user,
@@ -169,7 +163,7 @@ export default class App {
         },
         handler: (user, args) => {
           const content = [];
-          const cmd = args[1] || '';
+          const [, cmd = ''] = args;
           if (this._isValidCommand(cmd)) {
             if (this._isModel(user) || !this.commands[cmd].modelOnly) {
               this.commands[cmd].desc.long.fr.forEach(helpLine => {
@@ -200,10 +194,12 @@ export default class App {
           },
         },
         handler: (user, args) => {
-          const nbAvailablePegs = args[1] || this._settings.nbAvailablePegs;
-          const codeStr = args[2] || '';
-          const goal = args[3] || '';
-
+          const [
+            ,
+            nbAvailablePegs = this._settings.nbAvailablePegs,
+            codeStr = '',
+            goal = '',
+          ] = args;
           const txt = this._game.newRound(nbAvailablePegs, codeStr, goal);
           return { user, content: [{ txt }] };
         },
