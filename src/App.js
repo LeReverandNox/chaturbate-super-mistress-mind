@@ -2,27 +2,65 @@ import SuperMisstressmind from './SuperMistressmind';
 
 export default class App {
   constructor(cb, cbjs, commandParser) {
-    this.cb = cb;
-    this.cbjs = cbjs;
+    this._cb = cb;
+    this._cbjs = cbjs;
+
+    this.authors = ['LeReverandNox'];
+    this.version = '0.1';
+
+    this._createSettingForm();
+
     this.commandParser = commandParser;
-    this.modelName = cb.room_slug;
-    this.game = null;
+    this._modelName = cb.room_slug;
+    this._settings = this._parseSettings();
 
     this._initListeners();
+    this._run();
+  }
+
+  _run() {
+    try {
+      this._game = new SuperMisstressmind(this._settings.nbRounds);
+    } catch (error) {
+      this._sendError(this._modelName, error);
+    }
+  }
+
+  _parseSettings() {
+    return this._cb.settings;
+  }
+
+  _createSettingForm() {
+    this._cb.settings_choices = [
+      {
+        name: 'nbRounds',
+        type: 'int',
+        minValue: 1,
+        defaultValue: 3,
+        label: 'Number of rounds to play',
+      },
+      {
+        name: 'tokensToPlay',
+        type: 'int',
+        minValue: 1,
+        defaultValue: 10,
+        label: 'Amount of tokens required to play',
+      },
+    ];
   }
 
   _initListeners() {
-    this.cb.onMessage(msg => {
+    this._cb.onMessage(msg => {
       return this.onMessage(msg);
     });
 
-    this.cb.onTip(tip => {
+    this._cb.onTip(tip => {
       return this.onTip(tip);
     });
   }
 
   _isModel(name) {
-    return name === this.modelName;
+    return name === this._modelName;
   }
 
   onMessage(msgObj) {
@@ -55,8 +93,8 @@ export default class App {
   }
 
   onTip(tip) {
-    this.cb.log('Un tip');
-    this.cb.log(tip);
+    this._cb.log('Un tip');
+    this._cb.log(tip);
   }
 
   _isValidCommand(name) {
@@ -72,8 +110,21 @@ export default class App {
       const fg = line.fg || '';
       const weight = line.weight || '';
       const txt = line.txt || '';
-      this.cb.sendNotice(txt, user, bg, fg, weight, group);
+      this._cb.sendNotice(txt, user, bg, fg, weight, group);
     });
+  }
+
+  _sendError(to, err) {
+    const response = {
+      user: to,
+      content: [
+        {
+          txt: err.message,
+          fg: config.ERROR_COLOR,
+        },
+      ],
+    };
+    this._sendResponse(response);
   }
 
   get commands() {
