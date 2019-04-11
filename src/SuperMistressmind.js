@@ -117,7 +117,10 @@ export default class SuperMisstressmind {
   }
 
   set nbRounds(n) {
-    if (n < 1) throw new Error(`A game can't have less than one round.`);
+    if (n < 1)
+      throw new Error(
+        `A game can't have less than one round. Please start over the game with a correct value`,
+      );
     this._nbRounds = n;
     return this.nbRounds;
   }

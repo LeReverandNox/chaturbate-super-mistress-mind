@@ -84,7 +84,11 @@ export default class Round {
 
     [...cleanCodeStr].forEach(c => {
       if (!this._isPegAvailable(c))
-        throw new Error(`"${c} is not a valid color for your code.`);
+        throw new Error(
+          `"${c} is not a valid color for your code. Please use the following ones: ${Object.keys(
+            this.availablePegs,
+          ).join(', ')}`,
+        );
       code.push(this.availablePegs[c]);
     });
 
