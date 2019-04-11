@@ -86,8 +86,15 @@ export default class App {
 
     if (this._isValidCommand(cmd)) {
       if (this._commandAuthorized(user, cmd)) {
-        const response = this.commands[cmd].handler(user, args);
-        this._sendResponse(response);
+        try {
+          const response = this.commands[cmd].handler(user, args);
+          this._sendResponse(response);
+        } catch (error) {
+          this._sendError(
+            user,
+            new Error(`${error.message} \n${this.commands[cmd].desc.short.en}`),
+          );
+        }
       } else this._sendError(user, new Error(`Access denied.`));
     } else this._sendError(user, new Error(`Invalid command..`));
   }
@@ -110,7 +117,14 @@ export default class App {
       const fg = line.fg || '';
       const weight = line.weight || '';
       const txt = line.txt || '';
-      this._cb.sendNotice(txt, user, bg, fg, weight, group);
+      this._cb.sendNotice(
+        `${config.NOTICE_PREFIX} - ${txt}`,
+        user,
+        bg,
+        fg,
+        weight,
+        group,
+      );
     });
   }
 
@@ -137,12 +151,11 @@ export default class App {
         modelOnly: false,
         desc: {
           short: {
-            fr: [
-              `${
-                config.CMD_PREFIX
-              }helpFr [command] - Affiche l'aide du jeu (Fr)`,
-            ],
-            en: [`Show the help (En)`],
+            fr: `${
+              config.CMD_PREFIX
+            }helpFr [command] - Affiche l'aide du jeu (Fr)`,
+
+            en: `${config.CMD_PREFIX}helpFr [command] - Show the help (Fn)`,
           },
           long: {
             fr: [
@@ -170,6 +183,46 @@ export default class App {
           }
 
           return { user, content };
+        },
+      },
+      newround: {
+        modelOnly: true,
+        desc: {
+          short: {
+            fr: ``,
+            en: `${
+              config.CMD_PREFIX
+            }newround <number of colors> <code> <goal> - Starts a new round.`,
+          },
+          long: {
+            fr: [],
+            en: [],
+          },
+        },
+        handler: (user, args) => {
+          const nbAvailablePegs = args[1] || this._settings.nbAvailablePegs;
+          const codeStr = args[2] || '';
+          const goal = args[3] || '';
+
+          const txt = this._game.newRound(nbAvailablePegs, codeStr, goal);
+          return { user, content: [{ txt }] };
+        },
+      },
+      pause: {
+        modelOnly: true,
+        desc: {
+          short: {
+            fr: ``,
+            en: `${config.CMD_PREFIX}pause - Pause / Resume the game.`,
+          },
+          long: {
+            fr: [],
+            en: [],
+          },
+        },
+        handler: (user, args) => {
+          const txt = this._game.pause();
+          return { user, content: [{ txt }] };
         },
       },
     };

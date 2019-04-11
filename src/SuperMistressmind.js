@@ -129,7 +129,7 @@ export default class SuperMisstressmind {
     return this._currRound;
   }
 
-  newRound(nbColors, codeLength, codeStr, goal) {
+  newRound(nbAvailablePegs, codeStr, goal) {
     if (this.round && !this.round.isOver)
       throw new Error(
         `The current round (${this.currRound} / ${this.nbRounds} is not over.`,
@@ -139,8 +139,10 @@ export default class SuperMisstressmind {
         `The game is over. Please start a new one if you want to play some more.`,
       );
 
-    this.round = new Round(nbColors, codeLength, codeStr, goal);
+    this.round = new Round(nbAvailablePegs, codeStr, goal);
     this._currRound += 1;
+
+    return `Round #${this.currRound} of ${this.nbRounds} has started.`;
   }
 
   endRound() {
@@ -163,6 +165,9 @@ export default class SuperMisstressmind {
   }
 
   pause() {
+    if (this.isGameOver) throw new Error(`The game is over.`);
     this.isPaused = !this.isPaused;
+
+    return `The game is now ${this.isPaused ? '' : 'un-'}paused`;
   }
 }
