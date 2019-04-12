@@ -12,9 +12,8 @@ export default class Messenger {
     EventBus.on('sendResponse', this._sendResponse.bind(this));
   }
 
-  _sendResponse(response) {
-    const { user = '', group = '' } = response;
-    response.content.forEach(line => {
+  _sendResponse({ user = '', group = '', content = [] }) {
+    content.forEach(line => {
       const { fg = '', bg = '', weight = '', txt = '' } = line;
       this._cb.sendNotice(
         `${Config.NOTICE_PREFIX} - ${txt}`,
