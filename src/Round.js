@@ -1,5 +1,5 @@
 import Config from './Config';
-import SuperMisstressmind from './SuperMistressmind';
+import { EMPTY_PEGS, CODE_PEGS, KEY_PEGS, PEG_LETTERS, NB_PEGS } from './Pegs';
 
 export default class Round {
   constructor(nbAvailablePegs, codeStr, goal) {
@@ -18,11 +18,9 @@ export default class Round {
   }
 
   set nbAvailablePegs(nb) {
-    if (nb > SuperMisstressmind.NB_PEGS || nb < 1)
+    if (nb > NB_PEGS || nb < 1)
       throw new Error(
-        `You can't play with ${nb} colors. Please choose a value between 1 and ${
-          SuperMisstressmind.NB_PEGS
-        }.`,
+        `You can't play with ${nb} colors. Please choose a value between 1 and ${NB_PEGS}.`,
       );
 
     this._nbAvailablePegs = nb;
@@ -112,8 +110,8 @@ export default class Round {
   _initPegs() {
     const colors = {};
     for (let i = 0; i < this.nbAvailablePegs; i += 1) {
-      const letter = SuperMisstressmind.PEG_LETTERS[i];
-      colors[letter] = SuperMisstressmind.CODE_PEGS[letter];
+      const letter = PEG_LETTERS[i];
+      colors[letter] = CODE_PEGS[letter];
     }
 
     return colors;
@@ -133,7 +131,7 @@ export default class Round {
 
     codeArr.forEach(c => {
       if (this._isPegAvailable(c)) code.push(this.availablePegs[c]);
-      else code.push(SuperMisstressmind.EMPTY_PEGS.code);
+      else code.push(EMPTY_PEGS.code);
     });
 
     return code;
@@ -146,14 +144,14 @@ export default class Round {
 
     playerCode.forEach((_, i) => {
       if (this._isPegAtRightPos(i, tmpCode, tmpPlayerCode))
-        keys.push(SuperMisstressmind.KEY_PEGS[1]);
+        keys.push(KEY_PEGS[1]);
     });
 
     tmpPlayerCode.forEach((_, i) => {
       if (tmpPlayerCode[i] !== null) {
         if (this._isPegInCode(i, tmpCode, tmpPlayerCode))
-          keys.push(SuperMisstressmind.KEY_PEGS[0]);
-        else keys.push(SuperMisstressmind.EMPTY_PEGS.key);
+          keys.push(KEY_PEGS[0]);
+        else keys.push(EMPTY_PEGS.key);
       }
     });
 
@@ -184,7 +182,7 @@ export default class Round {
 
   _isGuessCorrect(keys) {
     return !keys.some(k => {
-      return k.name !== SuperMisstressmind.KEY_PEGS[1].name;
+      return k.name !== KEY_PEGS[1].name;
     });
   }
 
