@@ -1,3 +1,4 @@
+import Config from './Config';
 import Round from './Round';
 
 export default class SuperMisstressmind {
@@ -5,12 +6,12 @@ export default class SuperMisstressmind {
     return {
       code: {
         name: 'code-empty',
-        image: `:${config.IMAGE_PREFIX}-code-empty`,
+        image: `:${Config.IMAGE_PREFIX}-code-empty`,
         color: '#000000',
       },
       key: {
         name: 'key-empty',
-        image: `:${config.IMAGE_PREFIX}-key-empty`,
+        image: `:${Config.IMAGE_PREFIX}-key-empty`,
         color: '#000000',
         priority: 2,
       },
@@ -21,57 +22,57 @@ export default class SuperMisstressmind {
     return {
       W: {
         name: 'white',
-        image: `:${config.IMAGE_PREFIX}-white`,
+        image: `:${Config.IMAGE_PREFIX}-white`,
         color: '#FFFFFF',
       },
       R: {
         name: 'red',
-        image: `:${config.IMAGE_PREFIX}-red`,
+        image: `:${Config.IMAGE_PREFIX}-red`,
         color: '#FF0000',
       },
       B: {
         name: 'blue',
-        image: `:${config.IMAGE_PREFIX}-blue`,
+        image: `:${Config.IMAGE_PREFIX}-blue`,
         color: '#0000FF',
       },
       G: {
         name: 'green',
-        image: `:${config.IMAGE_PREFIX}-green`,
+        image: `:${Config.IMAGE_PREFIX}-green`,
         color: '#008000',
       },
       V: {
         name: 'violet',
-        image: `:${config.IMAGE_PREFIX}-violet`,
+        image: `:${Config.IMAGE_PREFIX}-violet`,
         color: '#8000FF',
       },
       O: {
         name: 'orange',
-        image: `:${config.IMAGE_PREFIX}-orange`,
+        image: `:${Config.IMAGE_PREFIX}-orange`,
         color: '#FFA500',
       },
       Y: {
         name: 'yellow',
-        image: `:${config.IMAGE_PREFIX}-yellow`,
+        image: `:${Config.IMAGE_PREFIX}-yellow`,
         color: '##fFFF00',
       },
       M: {
         name: 'maroon',
-        image: `:${config.IMAGE_PREFIX}-maroon`,
+        image: `:${Config.IMAGE_PREFIX}-maroon`,
         color: '#8b4513',
       },
       P: {
         name: 'pink',
-        image: `:${config.IMAGE_PREFIX}-pink`,
+        image: `:${Config.IMAGE_PREFIX}-pink`,
         color: '##FF69B4',
       },
       C: {
         name: 'cyan',
-        image: `:${config.IMAGE_PREFIX}-cyan`,
+        image: `:${Config.IMAGE_PREFIX}-cyan`,
         color: '##00ffff',
       },
       L: {
         name: 'lime',
-        image: `:${config.IMAGE_PREFIX}-lime`,
+        image: `:${Config.IMAGE_PREFIX}-lime`,
         color: '##00ff00',
       },
     };
@@ -81,13 +82,13 @@ export default class SuperMisstressmind {
     return [
       {
         name: 'white',
-        image: `:${config.IMAGE_PREFIX}-key-white`,
+        image: `:${Config.IMAGE_PREFIX}-key-white`,
         color: '#FFFFFF',
         priority: 1,
       },
       {
         name: 'red',
-        image: `:${config.IMAGE_PREFIX}-key-red`,
+        image: `:${Config.IMAGE_PREFIX}-key-red`,
         color: '#FF0000',
         priority: 0,
       },

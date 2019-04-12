@@ -1,3 +1,5 @@
+import Config from './Config';
+
 export default class CommandParser {
   _sanitize(str) {
     return str
@@ -12,7 +14,7 @@ export default class CommandParser {
     let readingPart = false;
     let part = '';
 
-    for (let i = config.CMD_PREFIX.length; i < cleanStr.length; i += 1) {
+    for (let i = Config.CMD_PREFIX.length; i < cleanStr.length; i += 1) {
       if (cleanStr.charAt(i) === ' ' && !readingPart) {
         if (part !== '') args.push(part.trim());
         part = '';

@@ -18,10 +18,6 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new webpack.ProvidePlugin({
-      config: './config',
-    }),
-  ],
+  plugins: [],
   devtool: 'source-map',
 };

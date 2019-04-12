@@ -1,3 +1,4 @@
+import Config from './Config';
 import SuperMisstressmind from './SuperMistressmind';
 
 export default class Round {
@@ -125,7 +126,7 @@ export default class Round {
   _convertInputIntoCode(codeStr) {
     const cleanCodeStr = codeStr
       .toUpperCase()
-      .padEnd(this.codeLength, config.EMPTY_CHAR)
+      .padEnd(this.codeLength, Config.EMPTY_CHAR)
       .substring(0, this.codeLength);
     const codeArr = cleanCodeStr.split('');
     const code = [];

@@ -1,3 +1,4 @@
+import Config from './Config';
 import SuperMisstressmind from './SuperMistressmind';
 
 export default class App {
@@ -75,7 +76,7 @@ export default class App {
   }
 
   _isCommand(str) {
-    return str.startsWith(config.CMD_PREFIX);
+    return str.startsWith(Config.CMD_PREFIX);
   }
 
   _handleCommand(msgObj) {
@@ -146,15 +147,15 @@ export default class App {
         desc: {
           short: {
             fr: `${
-              config.CMD_PREFIX
+              Config.CMD_PREFIX
             }helpFr [command] - Affiche l'aide du jeu (Fr)`,
 
-            en: `${config.CMD_PREFIX}helpFr [command] - Show the help (Fn)`,
+            en: `${Config.CMD_PREFIX}helpFr [command] - Show the help (Fn)`,
           },
           long: {
             fr: [
               `${
-                config.CMD_PREFIX
+                Config.CMD_PREFIX
               }helpFr [command] - Affiche des informations utiles sur le jeu (Fr).`,
               `Si [command] est specifie, affiche l'aide de la commande.`,
             ],
@@ -185,7 +186,7 @@ export default class App {
           short: {
             fr: ``,
             en: `${
-              config.CMD_PREFIX
+              Config.CMD_PREFIX
             }newround <number of colors> <code> <goal> - Starts a new round.`,
           },
           long: {
@@ -209,7 +210,7 @@ export default class App {
         desc: {
           short: {
             fr: ``,
-            en: `${config.CMD_PREFIX}pause - Pause / Resume the game.`,
+            en: `${Config.CMD_PREFIX}pause - Pause / Resume the game.`,
           },
           long: {
             fr: [],
