@@ -1,5 +1,6 @@
 import Config from './Config';
 import SuperMisstressmind from './SuperMistressmind';
+import EventBus from './EventBus';
 
 export default class App {
   constructor(cb, cbjs, commandParser) {
@@ -23,7 +24,7 @@ export default class App {
     try {
       this._game = new SuperMisstressmind(this._settings.nbRounds);
     } catch (error) {
-      this._sendError(this._modelName, error);
+      EventBus.emit('sendError', { to: this._modelName, error });
     }
   }
 
@@ -88,15 +89,25 @@ export default class App {
       if (this._commandAuthorized(user, cmd)) {
         try {
           const response = this.commands[cmd].handler(user, args);
-          this._sendResponse(response);
+          EventBus.emit('sendResponse', response);
         } catch (error) {
-          this._sendError(
-            user,
-            new Error(`${error.message} \n${this.commands[cmd].desc.short.en}`),
-          );
+          EventBus.emit('sendError', {
+            to: user,
+            error: new Error(
+              `${error.message} \n${this.commands[cmd].desc.short.en}`,
+            ),
+          });
         }
-      } else this._sendError(user, new Error(`Access denied.`));
-    } else this._sendError(user, new Error(`Invalid command..`));
+      } else
+        EventBus.emit('sendError', {
+          to: user,
+          error: new Error(`Access denied.`),
+        });
+    } else
+      EventBus.emit('sendError', {
+        to: user,
+        error: new Error(`Invalid command.`),
+      });
   }
 
   onTip(tip) {
@@ -106,34 +117,6 @@ export default class App {
 
   _isValidCommand(name) {
     return name in this.commands;
-  }
-
-  _sendResponse(response) {
-    const { user = '', group = '' } = response;
-    response.content.forEach(line => {
-      const { fg = '', bg = '', weight = '', txt = '' } = line;
-      this._cb.sendNotice(
-        `${config.NOTICE_PREFIX} - ${txt}`,
-        user,
-        bg,
-        fg,
-        weight,
-        group,
-      );
-    });
-  }
-
-  _sendError(to, err) {
-    const response = {
-      user: to,
-      content: [
-        {
-          txt: err.message,
-          fg: config.ERROR_COLOR,
-        },
-      ],
-    };
-    this._sendResponse(response);
   }
 
   _commandAuthorized(user, cmd) {
