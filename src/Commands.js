@@ -20,7 +20,7 @@ export default {
     },
     handler: function helpFrHandler(user, args) {
       const content = [];
-      const [, cmd = ''] = args;
+      const [cmd = ''] = args;
       if (this._isValidCommand(cmd)) {
         if (this._isModel(user) || !this._commands[cmd].modelOnly) {
           content.push({ txt: this._commands[cmd].desc.long.fr });
@@ -52,7 +52,6 @@ export default {
     },
     handler: function newroundHandler(user, args) {
       const [
-        ,
         nbAvailablePegs = this._settings.nbAvailablePegs,
         codeStr = '',
         goal = '',
@@ -62,7 +61,7 @@ export default {
     },
   },
   pause: {
-    modelOnly: false,
+    modelOnly: true,
     desc: {
       short: {
         fr: ``,

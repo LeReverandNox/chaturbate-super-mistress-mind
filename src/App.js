@@ -63,9 +63,21 @@ export default class App {
     const { user, m: msg } = msgObj;
     const args = this.commandParser.parse(msg);
     const [cmd = ''] = args;
+    args.shift();
 
-    if (this._isValidCommand(cmd)) {
-      if (this._commandAuthorized(user, cmd)) {
+    if (!this._isValidCommand(cmd)) {
+      return EventBus.emit('sendError', {
+        to: user,
+        error: new Error(`Invalid command.`),
+      });
+    }
+    if (!this._commandAuthorized(user, cmd)) {
+      return EventBus.emit('sendError', {
+        to: user,
+        error: new Error(`Access denied.`),
+      });
+    }
+
         try {
           this._commands[cmd].handler.call(this, user, args);
         } catch (error) {
