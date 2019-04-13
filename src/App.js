@@ -80,8 +80,9 @@ export default class App {
 
         try {
           this._commands[cmd].handler.call(this, user, args);
+      return true;
         } catch (error) {
-          EventBus.emit('sendError', {
+      return EventBus.emit('sendError', {
             to: user,
             error: new Error(
               `${error.message}
@@ -89,16 +90,7 @@ export default class App {
             ),
           });
         }
-      } else
-        EventBus.emit('sendError', {
-          to: user,
-          error: new Error(`Access denied.`),
-        });
-    } else
-      EventBus.emit('sendError', {
-        to: user,
-        error: new Error(`Invalid command.`),
-      });
+  }
   }
 
   _isValidCommand(name) {
