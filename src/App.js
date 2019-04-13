@@ -78,23 +78,37 @@ export default class App {
       });
     }
 
-        try {
-          this._commands[cmd].handler.call(this, user, args);
+    try {
+      this._commands[cmd].handler.call(this, user, args);
       return true;
-        } catch (error) {
+    } catch (error) {
       return EventBus.emit('sendError', {
-            to: user,
-            error: new Error(
-              `${error.message}
-              ${this._commands[cmd].desc.short.en}`,
-            ),
-          });
-        }
+        to: user,
+        error: new Error(
+          `${error.message}
+          ${this._commands[cmd].desc.short.en}`,
+        ),
+      });
+    }
   }
+
+  _handlePlayTip(tipObj) {
+    const { from_user: user, message = '' } = tipObj;
+    this._cb.log(`${user} va jouer ${message}`);
+
+    try {
+      this._game.play(user, message);
+    } catch (error) {
+      EventBus.emit('sendError', { to: user, error });
+    }
   }
 
   _isValidCommand(name) {
     return name in this._commands;
+  }
+
+  _isCorrectAmountToPlay(amount) {
+    return amount === this._settings.tokensToPlay;
   }
 
   _commandAuthorized(user, cmd) {
@@ -112,8 +126,11 @@ export default class App {
     return msgObj;
   }
 
-  onTip(tip) {
-    this._cb.log('Un tip');
-    this._cb.log(tip);
+  onTip(tipObj) {
+    const { amount } = tipObj;
+
+    if (this._isCorrectAmountToPlay(amount)) {
+      this._handlePlayTip(tipObj);
+    }
   }
 }

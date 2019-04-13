@@ -1,5 +1,11 @@
+import './Polyfills';
 import App from './App';
-import CommandParser from './CommandParser.js';
+import CommandParser from './CommandParser';
+import Messenger from './Messenger';
 
-let commandParser = new CommandParser();
-let app = new App(cb, cbjs, commandParser);
+const commandParser = new CommandParser();
+const messenger = new Messenger(cb);
+const app = new App(cb, cbjs, commandParser);
+
+cb.onMessage(msgObj => app.onMessage(msgObj));
+cb.onTip(tipObj => app.onTip(tipObj));

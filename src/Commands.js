@@ -77,4 +77,21 @@ export default {
       EventBus.emit('sendResponse', { user, content: [{ txt }] });
     },
   },
+  play: {
+    modelOnly: true,
+    desc: {
+      short: {
+        fr: ``,
+        en: `${Config.CMD_PREFIX}play <code> - Play for free !`,
+      },
+      long: {
+        fr: ``,
+        en: ``,
+      },
+    },
+    handler: function playHandler(user, args) {
+      const [code = ''] = args;
+      this._handlePlayTip({ from_user: user, message: code });
+    },
+  },
 };
