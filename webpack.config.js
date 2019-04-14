@@ -1,7 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
+const JavaScriptObfuscator = require('webpack-obfuscator');
 
-module.exports = {
+const config = {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
@@ -19,5 +20,26 @@ module.exports = {
     ],
   },
   plugins: [],
-  devtool: 'source-map',
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === 'production') {
+    config.plugins.push(
+      new JavaScriptObfuscator(
+        {
+          rotateStringArray: true,
+          selfDefending: true,
+          stringArrayEncoding: 'rc4',
+          transformObjectKeys: true,
+        },
+        ['abc.js'],
+      ),
+    );
+  }
+
+  if (argv.mode === 'development') {
+    config.devtool = 'source-map';
+  }
+
+  return config;
 };
