@@ -56,7 +56,7 @@ export default class Round {
   }
 
   get lastTry() {
-    return this.history[this.tries];
+    return this.history[this.tries - 1];
   }
 
   get winner() {
