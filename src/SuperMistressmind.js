@@ -40,6 +40,15 @@ export default class SuperMisstressmind {
     return this.round.goal;
   }
 
+  get board() {
+    if (this.isGameOver) throw new Error(`The game is over.`);
+    if (!this.round)
+      throw new Error(`The round is not started yet. Please be patient`);
+    if (this.round.isOver) throw new Error(`The round is over.`);
+
+    return this.round.history;
+  }
+
   newRound(nbAvailablePegs, codeStr, goal) {
     if (this.round && !this.round.isOver)
       throw new Error(

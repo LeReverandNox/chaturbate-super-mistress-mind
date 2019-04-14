@@ -26,7 +26,7 @@ export default {
           content.push(this._commands[cmd].desc.long.fr);
         } else {
           content.push(
-              "You don't have the permission to see the help for this command.",
+            "You don't have the permission to see the help for this command.",
           );
         }
       } else {
@@ -56,6 +56,7 @@ export default {
         goal = '',
       ] = args;
       const txt = this._game.newRound(nbAvailablePegs, codeStr, goal);
+      // TODO: Notify the chat about the new round, the goal, the code length and the available colors
       EventBus.emit('sendNoticeTo', { user, txt });
     },
   },
@@ -91,6 +92,33 @@ export default {
     handler: function playHandler(user, args) {
       const [code = ''] = args;
       this._handlePlayTip({ from_user: user, message: code });
+    },
+  },
+  board: {
+    modelOnly: false,
+    desc: {
+      short: {
+        fr: `${Config.CMD_PREFIX}board <code> - Affiche la table de jeu.`,
+        en: `${Config.CMD_PREFIX}board - Show the board game.`,
+      },
+      long: {
+        fr: `${Config.CMD_PREFIX}board <code> - Affiche la table de jeu.`,
+        en: `${Config.CMD_PREFIX}board <code> - Show the board game.`,
+      },
+    },
+    handler: function boardHandler(user, args) {
+      const { board } = this._game;
+      if (!board.length)
+        return EventBus.emit('sendNoticeTo', {
+          user,
+          txt: 'The board game is empty.',
+        });
+
+      const tries = board.map(t => this._formatTry(t));
+      return EventBus.emit('sendNoticeTo', {
+        user,
+        txt: tries.join('\n'),
+      });
     },
   },
 };
