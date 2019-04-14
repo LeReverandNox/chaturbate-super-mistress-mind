@@ -24,7 +24,7 @@ export default class App {
     try {
       this._game = new SuperMisstressmind(this._settings.nbRounds);
     } catch (error) {
-      EventBus.emit('sendError', { to: this._modelName, error });
+      EventBus.emit('sendErrorTo', { user: this._modelName, error });
     }
   }
 
@@ -66,14 +66,14 @@ export default class App {
     args.shift();
 
     if (!this._isValidCommand(cmd)) {
-      return EventBus.emit('sendError', {
-        to: user,
+      return EventBus.emit('sendErrorTo', {
+        user,
         error: new Error(`Invalid command.`),
       });
     }
     if (!this._commandAuthorized(user, cmd)) {
-      return EventBus.emit('sendError', {
-        to: user,
+      return EventBus.emit('sendErrorTo', {
+        user,
         error: new Error(`Access denied.`),
       });
     }
@@ -82,7 +82,7 @@ export default class App {
       this._commands[cmd].handler.call(this, user, args);
       return true;
     } catch (error) {
-      return EventBus.emit('sendError', {
+      return EventBus.emit('sendErrorTo', {
         to: user,
         error: new Error(
           `${error.message}

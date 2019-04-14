@@ -3,5 +3,16 @@ export default {
   EMPTY_CHAR: '.',
   CMD_PREFIX: '/sm',
   NOTICE_PREFIX: '[SM]',
-  ERROR_COLOR: `#FF0000`,
+  Messenger: {
+    Error: {
+      bg: '',
+      fg: `#FF0000`,
+      weight: '',
+    },
+    Notice: {
+      bg: '',
+      fg: '#00FF00',
+      weight: '',
+    },
+  },
 };

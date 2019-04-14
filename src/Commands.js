@@ -23,17 +23,16 @@ export default {
       const [cmd = ''] = args;
       if (this._isValidCommand(cmd)) {
         if (this._isModel(user) || !this._commands[cmd].modelOnly) {
-          content.push({ txt: this._commands[cmd].desc.long.fr });
+          content.push(this._commands[cmd].desc.long.fr);
         } else {
-          content.push({
-            txt:
+          content.push(
               "You don't have the permission to see the help for this command.",
-          });
+          );
         }
       } else {
-        content.push({ txt: "Bienvenue dans l'aide !" });
+        content.push("Bienvenue dans l'aide !");
       }
-      EventBus.emit('sendResponse', { user, content });
+      EventBus.emit('sendNoticeTo', { user, txt: content.join('\n') });
     },
   },
   newround: {
@@ -57,7 +56,7 @@ export default {
         goal = '',
       ] = args;
       const txt = this._game.newRound(nbAvailablePegs, codeStr, goal);
-      EventBus.emit('sendResponse', { user, content: [{ txt }] });
+      EventBus.emit('sendNoticeTo', { user, txt });
     },
   },
   pause: {
@@ -74,7 +73,7 @@ export default {
     },
     handler: function pauseHandler(user, args) {
       const txt = this._game.pause();
-      EventBus.emit('sendResponse', { user, content: [{ txt }] });
+      EventBus.emit('sendNoticeTo', { user, txt });
     },
   },
   play: {
@@ -85,8 +84,8 @@ export default {
         en: `${Config.CMD_PREFIX}play <code> - Play for free !`,
       },
       long: {
-        fr: ``,
-        en: ``,
+        fr: `${Config.CMD_PREFIX}play <code> - Jouer gratuitement !`,
+        en: `${Config.CMD_PREFIX}play <code> - Play for free !`,
       },
     },
     handler: function playHandler(user, args) {
