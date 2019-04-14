@@ -5,7 +5,7 @@ export default class SuperMisstressmind {
     this.nbRounds = nbRounds;
     this._currRound = 0;
     this.round = null;
-    this.previousRounds = [];
+    this._previousRounds = [];
 
     this.isPaused = false;
     this.isGameOver = false;
@@ -28,6 +28,18 @@ export default class SuperMisstressmind {
     return this._currRound;
   }
 
+  get lastTry() {
+    return this.round.lastTry;
+  }
+
+  get currentWinner() {
+    return this.round.winner;
+  }
+
+  get currentGoal() {
+    return this.round.goal;
+  }
+
   newRound(nbAvailablePegs, codeStr, goal) {
     if (this.round && !this.round.isOver)
       throw new Error(
@@ -46,7 +58,7 @@ export default class SuperMisstressmind {
 
   endRound() {
     if (!this.round) throw new Error(`There is currently no round playing.`);
-    this.previousRounds.push(this.round);
+    this._previousRounds.push(this.round);
     this.round.end();
     if (this.currRound === this.nbRounds) this.isGameOver = true;
   }

@@ -94,13 +94,34 @@ export default class App {
 
   _handlePlayTip(tipObj) {
     const { from_user: user, message = '' } = tipObj;
-    this._cb.log(`${user} va jouer ${message}`);
 
     try {
-      this._game.play(user, message);
+      const hasWin = this._game.play(user, message);
+      this._displayLastTry();
+      if (hasWin) {
+        EventBus.emit(
+          'broadcastNotice',
+          `${this._game.currentWinner} cracked the code ! Well played :)
+          The goal "${this._game.currentGoal}" is achieved !`,
+        );
+      }
     } catch (error) {
-      EventBus.emit('sendError', { to: user, error });
+      EventBus.emit('sendErrorTo', { user, error });
     }
+  }
+
+  _displayLastTry() {
+    const t = this._game.lastTry;
+    const txt = this._formatTry(t);
+    EventBus.emit('broadcastNotice', txt);
+  }
+
+  _formatTry(t) {
+    const elements = [];
+    t.code.forEach(c => elements.push(c.image));
+    elements.push(' - ');
+    t.keys.forEach(k => elements.push(k.image));
+    return elements.join(' ');
   }
 
   _isValidCommand(name) {
